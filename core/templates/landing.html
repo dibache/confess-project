@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CONFESS</title>
     <style>
+        /* ==========================================
+           [SECTION 1: GENERAL STYLES & BODY]
+           تنظیمات کلی صفحه و بدنه سایت
+           ================================---------- */
         body {
             background: transparent;
             color: white;
@@ -14,16 +18,35 @@
             overflow-x: hidden;
         }
 
+        /* ==========================================
+           [SECTION 2: BACKGROUND & THEMES]
+           مدیریت عکس‌های پس‌زمینه برای حالت‌های مختلف (Devil و Angel)
+           ================================---------- */
         .bg-image-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -2; background-image: url('{% static "download.jpg" %}'); background-position: center; background-size: cover; background-repeat: no-repeat;
+            z-index: -2; background-position: center; background-size: cover; background-repeat: no-repeat;
+            transition: background-image 0.5s ease-in-out;
         }
+
+        /* عکس پس‌زمینه در حالت Angel (فرشته) */
+        body.angel-mode .bg-image-container {
+            background-image: url('{% static "download.jpg" %}');
+        }
+
+        /* عکس پس‌زمینه در حالت Devil (شیطان) */
+        body.devil-mode .bg-image-container {
+            background-image: url('{% static "devil-bg.jpg" %}');
+        }
+
         .bg-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(15, 15, 17, 0.65); z-index: -1;
         }
 
-        /* --- هدر کاملاً شفاف --- */
+        /* ==========================================
+           [SECTION 3: HEADER & NAVIGATION]
+           هدر سایت، منوی دسکتاپ (سمت چپ) و دکمه‌های کپسولی
+           ================================---------- */
         header {
             position: fixed; top: 0; left: 0; width: 100%; padding: 20px 40px;
             display: flex; justify-content: space-between; align-items: center;
@@ -32,11 +55,10 @@
             box-sizing: border-box; z-index: 2000;
         }
 
-        /* --- منوی کپسولی دسکتاپ --- */
         .desktop-nav {
             display: flex; gap: 8px; align-items: center;
         }
-        
+
         .tab-btn {
             position: relative; display: flex; align-items: center; gap: 8px;
             background: rgba(30, 30, 34, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -45,6 +67,7 @@
             font-size: 13px; font-weight: 500; padding: 10px 16px; border-radius: 25px;
             cursor: pointer; overflow: hidden; text-decoration: none;
             transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+            height: 41px; box-sizing: border-box;
         }
         
         .tab-icon {
@@ -69,14 +92,96 @@
         .desktop-nav a.logout-btn { background: rgba(255, 59, 29, 0.15); color: #ff3b1d; border-color: transparent; }
         .desktop-nav a.logout-btn:hover { background: #ff3b1d; color: white; box-shadow: 0 0 15px rgba(255, 59, 29, 0.4); }
 
-        /* --- دکمه منوی همبرگری موبایل --- */
+        /* ==========================================
+           [SECTION 4: ICON MODE TOGGLE SWITCH]
+           سوییچ تغییر حالت با آیکون‌های سفارشی شیطان و فرشته (در سمت راست هدر)
+           ================================---------- */
+        .mode-toggle-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 75px;
+            height: 41px;
+            box-sizing: border-box;
+        }
+
+        .mode-toggle-input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .mode-toggle-track {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(30, 30, 34, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-radius: 25px;
+            transition: 0.4s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 12px;
+            box-sizing: border-box;
+        }
+
+        .mode-toggle-option {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+            transition: color 0.3s ease, opacity 0.3s ease;
+        }
+
+        .mode-toggle-thumb {
+            position: absolute;
+            content: "";
+            height: 27px;
+            width: 27px;
+            left: 6px;
+            top: 6px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            transition: transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1), background-color 0.4s ease;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .mode-toggle-input:checked + .mode-toggle-track .mode-toggle-thumb {
+            transform: translateX(34px);
+            background-color: #ffffff;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+        }
+
+        /* رنگ آیکون‌ها در حالت فعال و غیرفعال */
+        .mode-toggle-input:checked + .mode-toggle-track .opt-d {
+            color: #ff4242; /* قرمز برای شاخ شیطان در حالت فعال */
+            opacity: 1;
+        }
+        .mode-toggle-input:not(:checked) + .mode-toggle-track .opt-d {
+            color: #71717a; /* کم‌رنگ وقتی غیرفعال است */
+        }
+
+        .mode-toggle-input:not(:checked) + .mode-toggle-track .opt-a {
+            color: #ffffff; /* سفید برای بال فرشته در حالت فعال */
+            opacity: 1;
+        }
+        .mode-toggle-input:checked + .mode-toggle-track .opt-a {
+            color: #71717a; /* کم‌رنگ وقتی غیرفعال است */
+        }
+
+        /* ==========================================
+           [SECTION 5: MOBILE MENU]
+           منوی همبرگری و حالت نمایشی موبایل
+           ================================---------- */
         .mobile-menu-btn {
             display: none; background: rgba(30, 30, 34, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255,255,255,0.08); border-radius: 50%; width: 44px; height: 44px;
             align-items: center; justify-content: center; color: white; cursor: pointer; z-index: 2100;
         }
 
-        /* --- منوی تمام‌صفحه شیشه‌ای (Overlay) --- */
         .mobile-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background: rgba(10, 10, 12, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -86,7 +191,7 @@
         .mobile-overlay.open { opacity: 1; visibility: visible; pointer-events: auto; }
 
         .mobile-nav-list { display: flex; flex-direction: column; gap: 30px; align-items: center; width: 100%; }
-        
+
         .mobile-nav-link {
             font-size: 32px; font-weight: 700; color: #888; text-decoration: none; text-transform: uppercase;
             letter-spacing: 2px; transition: color 0.3s, transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -100,7 +205,7 @@
 
         .mobile-nav-link:hover, .mobile-nav-link:active { color: #fff; transform: scale(1.05); }
         .mobile-nav-link.active-link { color: #8b5cf6; }
-        
+
         .mobile-action { margin-top: 20px; font-size: 24px; padding: 15px 40px; border-radius: 30px; border: 2px solid #8b5cf6; color: #8b5cf6; }
         .mobile-logout { margin-top: 20px; font-size: 24px; color: #ff3b1d; border: 2px solid rgba(255, 59, 29, 0.3); padding: 15px 40px; border-radius: 30px; }
 
@@ -110,6 +215,10 @@
             .mobile-menu-btn { display: flex; }
         }
 
+        /* ==========================================
+           [SECTION 6: HERO & CONTENT SECTIONS]
+           بخش عنوان بزرگ سایت و کارت‌های پست برتر
+           ================================---------- */
         .hero-section { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .stamped-title { font-size: 15vw; max-font-size: 130px; color: #8b5cf6; font-family: 'Courier New', Courier, monospace; text-transform: uppercase; margin: 0; display: flex; justify-content: center; gap: 2px; }
         .stamped-title span { opacity: 0; display: inline-block; animation: stampEffect 0.35s cubic-bezier(0.25, 1, 0.5, 1.2) forwards; }
@@ -124,18 +233,22 @@
 
         .glass-card { width: 100%; max-width: 500px; background: rgba(20, 20, 24, 0.4); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 25px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); text-align: left; }
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .category-badge { background-color: rgba(139, 92, 246, 0.15); color: #8b5cf6; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .category-badge { background-color: rgba(139, 92, 246, 0.15); color: #8b5cf6; padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
         .post-score { color: #888; font-size: 13px; font-weight: 600; }
         .post-text { font-size: 16px; line-height: 1.7; color: #ededed; margin: 0; }
     </style>
 </head>
 <body>
 
+    <!-- کانتینر تصویر پس‌زمینه -->
     <div class="bg-image-container"></div>
     <div class="bg-overlay"></div>
 
+    <!-- ==========================================
+       [HEADER SECTION]
+       ================================---------- -->
     <header>
-        <!-- منوی دسکتاپ با آیکون‌های اختصاصی برای Write، Read، Log In و Logout -->
+        <!-- منوی دسکتاپ (سمت چپ) -->
         <div class="desktop-nav" id="navTabs">
             <a href="{% url 'write_post' %}" class="tab-btn" data-id="write">
                 <div class="tab-icon">
@@ -143,7 +256,7 @@
                 </div>
                 <div class="tab-text">Write</div>
             </a>
-            
+
             <a href="{% url 'choose_category' %}" class="tab-btn" data-id="read">
                 <div class="tab-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
@@ -174,18 +287,43 @@
             {% endif %}
         </div>
 
+        <!-- دکمه سوییچ حالت شیطان و فرشته با آیکون‌های سفارشی (سمت راست) -->
+        <div class="mode-toggle-wrapper">
+            <input type="checkbox" id="mode-toggle" class="mode-toggle-input">
+            <label for="mode-toggle" class="mode-toggle-track">
+                <div class="mode-toggle-thumb"></div>
+                
+                <!-- آیکون شاخ شیطان (Devil Mode) -->
+                <span class="mode-toggle-option opt-d" title="Devil Mode">
+                    <svg viewBox="0 0 512 512" width="18" height="18" fill="currentColor">
+                        <path d="M90 160 C72 181 57 207 50 235 C39 282 57 329 91 352 C101 359 112 364 123 367 C150 353 169 330 176 302 C179 291 180 281 180 275 C142 264 113 245 98 220 C85 199 89 177 90 160 Z"/>
+                        <path d="M422 160 C440 181 455 207 462 235 C473 282 455 329 421 352 C411 359 400 364 389 367 C362 353 343 330 336 302 C333 291 332 281 332 275 C370 264 399 245 414 220 C427 199 423 177 422 160 Z"/>
+                    </svg>
+                </span>
+
+                <!-- آیکون بال فرشته و هاله (Angel Mode) -->
+                <span class="mode-toggle-option opt-a" title="Angel Mode">
+                    <svg viewBox="0 0 512 512" width="20" height="20" fill="none" stroke="currentColor" stroke-width="28" stroke-linecap="round" stroke-linejoin="round">
+                        <ellipse cx="256" cy="174" rx="85" ry="20" stroke="#FFD700" stroke-width="28" fill="none"/>
+                        <path d="M14 136 C61 184 111 226 174 252 C213 268 239 282 242 307 C247 346 218 377 180 377 C126 377 88 348 69 314 C52 284 42 253 36 222 C22 197 10 167 14 136 Z"/>
+                        <path d="M498 136 C451 184 401 226 338 252 C299 268 273 282 270 307 C265 346 294 377 332 377 C386 377 424 348 443 314 C460 284 470 253 476 222 C490 197 502 167 498 136 Z"/>
+                    </svg>
+                </span>
+            </label>
+        </div>
+
         <!-- دکمه همبرگری موبایل -->
         <div class="mobile-menu-btn" id="mobileMenuBtn">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
         </div>
     </header>
 
-    <!-- لایه تمام‌صفحه موبایل -->
+    <!-- لایه منوی موبایل -->
     <div class="mobile-overlay" id="mobileOverlay">
         <div class="mobile-nav-list">
             <a href="{% url 'write_post' %}" class="mobile-nav-link">Write</a>
             <a href="{% url 'choose_category' %}" class="mobile-nav-link">Read</a>
-            
+
             {% if user.is_authenticated %}
                 <a href="{% url 'logout' %}" class="mobile-nav-link mobile-logout">Logout</a>
             {% else %}
@@ -195,6 +333,9 @@
         </div>
     </div>
 
+    <!-- ==========================================
+       [MAIN CONTENT SECTION]
+       ================================---------- -->
     <div class="hero-section">
         <h1 class="stamped-title">
             <span>c</span><span>o</span><span>n</span><span>f</span><span>e</span><span>s</span><span>s</span>
@@ -219,11 +360,16 @@
 
     </div>
 
+    <!-- ==========================================
+       [JAVASCRIPT SECTION]
+       مدیریت منوها، وضعیت سوییچ و کوکی‌ها
+       ================================---------- -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // هاور منوی دسکتاپ
             if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
                 const tabs = document.querySelectorAll('.tab-btn[data-id]');
-                
+
                 tabs.forEach(tab => {
                     tab.addEventListener('mouseenter', function() {
                         tabs.forEach(t => t.classList.remove('active'));
@@ -237,6 +383,7 @@
                 });
             }
 
+            // باز و بسته کردن منوی موبایل
             const mobileMenuBtn = document.getElementById('mobileMenuBtn');
             const mobileOverlay = document.getElementById('mobileOverlay');
             let isMenuOpen = false;
@@ -250,6 +397,33 @@
                     mobileOverlay.classList.remove('open');
                     mobileMenuBtn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
                 }
+            });
+
+            // مدیریت وضعیت دکمه سوییچ حالت و کوکی‌ها
+            const modeToggle = document.getElementById('mode-toggle');
+            const currentMode = localStorage.getItem('confess_mode') || 'd';
+            
+            if (currentMode === 'a') {
+                modeToggle.checked = true;
+                document.body.classList.add('angel-mode');
+            } else {
+                modeToggle.checked = false;
+                document.body.classList.add('devil-mode');
+            }
+
+            modeToggle.addEventListener('change', () => {
+                const newMode = modeToggle.checked ? 'a' : 'd';
+                localStorage.setItem('confess_mode', newMode);
+                
+                // ست کردن کوکی برای سمت سرور (جنگو)
+                document.cookie = `confess_mode=${newMode}; path=/; max-age=31536000`;
+                
+                if (newMode === 'a') {
+                    document.body.classList.replace('devil-mode', 'angel-mode');
+                } else {
+                    document.body.classList.replace('angel-mode', 'devil-mode');
+                }
+                window.location.reload();
             });
         });
     </script>

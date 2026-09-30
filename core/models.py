@@ -12,9 +12,11 @@ class Profile(models.Model):
 # ۲. جدول دسته‌بندی‌ها
 class Category(models.Model):
     name = models.CharField(max_length=50, verbose_name="نام دسته")
-    
+    is_angel = models.BooleanField(default=False, verbose_name="آیا مربوط به حالت فرشته است؟")
+
     def __str__(self):
-        return self.name
+        mode_name = "Angel" if self.is_angel else "Devil"
+        return f"{self.name} ({mode_name})"
 
 # ۳. جدول پیام‌ها
 class Post(models.Model):
@@ -24,6 +26,6 @@ class Post(models.Model):
     score = models.IntegerField(default=0, verbose_name="امتیاز کاربران")
     is_pinned = models.BooleanField(default=False, verbose_name="آیا برترین پست ماه است؟")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="زمان انتشار")
-    
+
     def __str__(self):
         return f"{self.category.name}: {self.text[:30]}..."
