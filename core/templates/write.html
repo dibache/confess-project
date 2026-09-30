@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Write - CONFESS</title>
-
-    <!-- تنظیمات Import Map برای استفاده از ماژول‌های مدرن Three.js -->
+    
     <script type="importmap">
       {
         "imports": {
@@ -17,13 +16,13 @@
     </script>
 
     <style>
-        body {
-            background-color: #050505;
-            color: #ededed;
-            font-family: system-ui, -apple-system, sans-serif;
-            margin: 0; padding: 0; display: flex;
-            justify-content: center; align-items: center;
-            min-height: 100vh; overflow: hidden;
+        body { 
+            background-color: #050505; 
+            color: #ededed; 
+            font-family: system-ui, -apple-system, sans-serif; 
+            margin: 0; padding: 0; display: flex; 
+            justify-content: center; align-items: center; 
+            min-height: 100vh; overflow: hidden; 
         }
 
         #three-canvas-container {
@@ -33,30 +32,101 @@
         .bg-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to bottom, rgba(5,5,5,0.1) 0%, rgba(5,5,5,0.7) 100%);
-            z-index: -1; pointer-events: none;
+            z-index: -1; pointer-events: none; 
         }
 
-        /* --- Header (کاملاً شفاف شده) --- */
+        /* --- هدر کاملاً شفاف --- */
         header {
             position: fixed; top: 0; left: 0; width: 100%; padding: 20px 40px;
-            display: flex; justify-content: flex-start; align-items: center;
-            background: transparent; /* کاملاً شفاف */
-            border-bottom: none; /* حذف خط پایین */
-            box-sizing: border-box; z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+            background: transparent;
+            border-bottom: none;
+            box-sizing: border-box; z-index: 2000;
         }
 
-        .nav-links { display: flex; gap: 25px; align-items: center; }
-        .nav-links a { color: #ccc; text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.3s; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-        .nav-links a:hover { color: #fff; }
-        .nav-links a.signup-btn { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; padding: 6px 16px; border-radius: 20px; font-weight: 600; transition: all 0.2s; text-shadow: none; border: 1px solid rgba(139, 92, 246, 0.3); }
-        .nav-links a.signup-btn:hover { background: #8b5cf6; color: white; border-color: transparent; box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); }
+        /* --- منوی کپسولی دسکتاپ --- */
+        .desktop-nav {
+            display: flex; gap: 8px; align-items: center;
+        }
+        
+        .tab-btn {
+            position: relative; display: flex; align-items: center; gap: 8px;
+            background: rgba(30, 30, 34, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            color: #a1a1aa; font-family: monospace; text-transform: uppercase;
+            font-size: 13px; font-weight: 500; padding: 10px 16px; border-radius: 25px;
+            cursor: pointer; overflow: hidden; text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+        
+        .tab-icon {
+            flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+            transition: transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+
+        .tab-text {
+            white-space: nowrap; transition: all 0.3s cubic-bezier(0.86, 0, 0.07, 1);
+            max-width: 0; opacity: 0; filter: blur(4px); overflow: hidden;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .tab-btn:hover { color: #fff; background: rgba(40, 40, 45, 0.8); }
+            .tab-btn.active { color: #8b5cf6; padding-left: 20px; padding-right: 20px; border-color: rgba(139, 92, 246, 0.3); }
+            .tab-btn.active .tab-icon { transform: scale(1.1); }
+            .tab-btn.active .tab-text { max-width: 100px; opacity: 1; filter: blur(0px); margin-left: 4px; }
+        }
+
+        .desktop-nav a.action-btn { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; border-color: transparent; }
+        .desktop-nav a.action-btn:hover { background: #8b5cf6; color: white; box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); }
+        .desktop-nav a.logout-btn { background: rgba(255, 59, 29, 0.15); color: #ff3b1d; border-color: transparent; }
+        .desktop-nav a.logout-btn:hover { background: #ff3b1d; color: white; box-shadow: 0 0 15px rgba(255, 59, 29, 0.4); }
+
+        /* --- دکمه منوی همبرگری موبایل --- */
+        .mobile-menu-btn {
+            display: none; background: rgba(30, 30, 34, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 50%; width: 44px; height: 44px;
+            align-items: center; justify-content: center; color: white; cursor: pointer; z-index: 2100;
+        }
+
+        /* --- منوی تمام‌صفحه شیشه‌ای (Overlay) --- */
+        .mobile-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: rgba(10, 10, 12, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 1500; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.4s ease, visibility 0.4s;
+        }
+        .mobile-overlay.open { opacity: 1; visibility: visible; pointer-events: auto; }
+
+        .mobile-nav-list { display: flex; flex-direction: column; gap: 30px; align-items: center; width: 100%; }
+        
+        .mobile-nav-link {
+            font-size: 32px; font-weight: 700; color: #888; text-decoration: none; text-transform: uppercase;
+            letter-spacing: 2px; transition: color 0.3s, transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform: translateY(20px); opacity: 0; display: flex; align-items: center; gap: 15px;
+        }
+        .mobile-overlay.open .mobile-nav-link { transform: translateY(0); opacity: 1; }
+        .mobile-overlay.open .mobile-nav-link:nth-child(1) { transition-delay: 0.1s; }
+        .mobile-overlay.open .mobile-nav-link:nth-child(2) { transition-delay: 0.15s; }
+        .mobile-overlay.open .mobile-nav-link:nth-child(3) { transition-delay: 0.2s; }
+
+        .mobile-nav-link:hover, .mobile-nav-link:active { color: #fff; transform: scale(1.05); }
+        .mobile-nav-link.active-link { color: #8b5cf6; }
+        
+        .mobile-action { margin-top: 20px; font-size: 24px; padding: 15px 40px; border-radius: 30px; border: 2px solid #8b5cf6; color: #8b5cf6; }
+        .mobile-logout { margin-top: 20px; font-size: 24px; color: #ff3b1d; border: 2px solid rgba(255, 59, 29, 0.3); padding: 15px 40px; border-radius: 30px; }
+
+        @media (max-width: 768px) {
+            header { padding: 20px; }
+            .desktop-nav { display: none; }
+            .mobile-menu-btn { display: flex; }
+        }
 
         /* --- Form Container --- */
         .form-container {
-            width: 90%; max-width: 550px; background-color: transparent;
+            width: 90%; max-width: 550px; background-color: transparent; 
             backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-            padding: 50px 40px; border-radius: 24px;
-            border: 1px solid rgba(255,255,255,0.03);
+            padding: 50px 40px; border-radius: 24px; 
+            border: 1px solid rgba(255,255,255,0.03); 
             box-shadow: 0 10px 40px rgba(0,0,0,0.6);
             box-sizing: border-box; margin-top: 60px;
             animation: fadeIn 0.8s ease forwards; position: relative; z-index: 10;
@@ -78,7 +148,7 @@
         }
         .dropdown-trigger:hover { border-color: rgba(255, 255, 255, 0.3); }
         .dropdown-trigger.active { border-color: #8b5cf6; box-shadow: 0 0 15px rgba(139, 92, 246, 0.2); }
-
+        
         .trigger-text { display: flex; align-items: center; gap: 10px; }
         .trigger-icon { transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .dropdown-trigger.active .trigger-icon { transform: rotate(180deg); }
@@ -129,40 +199,85 @@
             font-size: 16px; font-weight: 600; letter-spacing: 0.5px; cursor: pointer; transition: all 0.3s ease; margin-top: 10px;
         }
         .submit-btn:hover { background: #8b5cf6; color: #fff; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3); }
-
+        
         .hidden-real-select { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
     </style>
 </head>
 <body>
 
-    <!-- کانتینر رندر Three.js -->
     <div id="three-canvas-container"></div>
     <div class="bg-overlay"></div>
 
+    <!-- هدر کاملاً شفاف با منوی رسپانسیو و مدیریت لاگین/لاگ‌اوت -->
     <header>
-        <div class="nav-links">
-            <a href="{% url 'landing' %}">Home</a>
-            <a href="{% url 'choose_category' %}">Read</a>
+        <div class="desktop-nav" id="navTabs">
+            <a href="{% url 'landing' %}" class="tab-btn" data-id="home">
+                <div class="tab-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                </div>
+                <div class="tab-text">Home</div>
+            </a>
+            
+            <a href="{% url 'choose_category' %}" class="tab-btn" data-id="read">
+                <div class="tab-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                </div>
+                <div class="tab-text">Read</div>
+            </a>
+
             {% if user.is_authenticated %}
-                <a href="{% url 'logout' %}" class="signup-btn" style="background: rgba(255, 59, 29, 0.15); color: #ff3b1d;">Logout</a>
+                <a href="{% url 'logout' %}" class="tab-btn logout-btn" data-id="logout">
+                    <div class="tab-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    </div>
+                    <div class="tab-text">Logout</div>
+                </a>
             {% else %}
-                <a href="{% url 'login' %}">Log In</a>
-                <a href="{% url 'signup' %}" class="signup-btn">Sign Up</a>
+                <a href="{% url 'login' %}" class="tab-btn" data-id="login">
+                    <div class="tab-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                    </div>
+                    <div class="tab-text">Log In</div>
+                </a>
+                <a href="{% url 'signup' %}" class="tab-btn action-btn" data-id="signup">
+                    <div class="tab-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+                    </div>
+                    <div class="tab-text">Sign Up</div>
+                </a>
             {% endif %}
         </div>
+
+        <div class="mobile-menu-btn" id="mobileMenuBtn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </div>
     </header>
+
+    <!-- لایه تمام‌صفحه موبایل -->
+    <div class="mobile-overlay" id="mobileOverlay">
+        <div class="mobile-nav-list">
+            <a href="{% url 'landing' %}" class="mobile-nav-link">Home</a>
+            <a href="{% url 'choose_category' %}" class="mobile-nav-link">Read</a>
+            
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="mobile-nav-link mobile-logout">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="mobile-nav-link">Log In</a>
+                <a href="{% url 'signup' %}" class="mobile-nav-link mobile-action">Sign Up</a>
+            {% endif %}
+        </div>
+    </div>
 
     <div class="form-container">
         <div class="form-title">Confess</div>
         <div class="form-subtitle">Write your story. Remain anonymous.</div>
 
-        <!-- فرم متصل به بک‌اند جنگو -->
         <form method="POST" action="">
             {% csrf_token %}
-
+            
             <div class="input-group">
                 <label>Category</label>
-
+                
                 <select name="category" id="realCategorySelect" class="hidden-real-select" required>
                     <option value="" disabled selected>Select a category...</option>
                     {% for cat in categories %}
@@ -178,7 +293,7 @@
                         </span>
                         <svg class="trigger-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
                     </div>
-
+                    
                     <div class="dropdown-menu">
                         <ul class="dropdown-list" id="dropdownList">
                             <div class="hover-indicator" id="hoverIndicator">
@@ -206,8 +321,39 @@
         </form>
     </div>
 
-    <!-- اسکریپت‌های مربوط به فرم (شمارنده و منوی دراپ‌داون) -->
+    <!-- اسکریپت‌ها -->
     <script>
+        // منوی کپسولی دسکتاپ
+        if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+            const tabs = document.querySelectorAll('.tab-btn[data-id]');
+            tabs.forEach(tab => {
+                tab.addEventListener('mouseenter', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            const navTabs = document.getElementById('navTabs');
+            navTabs.addEventListener('mouseleave', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+            });
+        }
+
+        // منوی همبرگری موبایل
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+        let isMenuOpen = false;
+        mobileMenuBtn.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            if(isMenuOpen) {
+                mobileOverlay.classList.add('open');
+                mobileMenuBtn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+            } else {
+                mobileOverlay.classList.remove('open');
+                mobileMenuBtn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
+            }
+        });
+
+        // شمارنده کاراکتر
         const textarea = document.getElementById('text');
         const charCount = document.getElementById('char-count');
         textarea.addEventListener('input', function() {
@@ -217,6 +363,7 @@
             else charCount.classList.remove('limit-reached');
         });
 
+        // دراپ‌داون دسته‌بندی
         const dropdownWrapper = document.getElementById('dropdownWrapper');
         const dropdownTrigger = document.getElementById('dropdownTrigger');
         const triggerText = document.getElementById('triggerText');
@@ -251,7 +398,6 @@
                 hoverIndicator.style.opacity = '1';
                 hoverIndicator.style.transform = `translateY(${item.offsetTop}px)`;
             });
-
             item.addEventListener('click', function() {
                 const value = this.getAttribute('data-value');
                 const name = this.getAttribute('data-name');
@@ -271,7 +417,7 @@
         });
     </script>
 
-    <!-- اسکریپت‌های Three.js برای افکت غبار نجواها (Bloom + Parallax) -->
+    <!-- Three.js Background -->
     <script type="module">
         import * as THREE from 'three';
         import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -279,8 +425,6 @@
         import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
         const canvasContainer = document.getElementById('three-canvas-container');
-
-        // تنظیمات صحنه، دوربین و رندر
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x050505, 0.0015);
 
@@ -292,26 +436,22 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         canvasContainer.appendChild(renderer.domElement);
 
-        // تنظیمات افکت درخشش (Bloom)
         const renderPass = new RenderPass(scene, camera);
         const bloomPass = new UnrealBloomPass(
             new THREE.Vector2(window.innerWidth, window.innerHeight),
-            2.0, // قدرت درخشش
-            0.5, // شعاع
-            0.1  // آستانه نور
+            2.0, 0.5, 0.1 
         );
 
         const composer = new EffectComposer(renderer);
         composer.addPass(renderPass);
         composer.addPass(bloomPass);
 
-        // ایجاد سیستم ذرات غبار
         const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 3000;
+        const particlesCount = 3000; 
         const posArray = new Float32Array(particlesCount * 3);
         const colorsArray = new Float32Array(particlesCount * 3);
 
-        const colorPurple = new THREE.Color(0x8b5cf6);
+        const colorPurple = new THREE.Color(0x8b5cf6); 
         const colorWhite = new THREE.Color(0xffffff);
         const colorDarkPurple = new THREE.Color(0x4c1d95);
 
@@ -334,7 +474,7 @@
         particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
 
         const particlesMaterial = new THREE.PointsMaterial({
-            size: 0.04,
+            size: 0.04, 
             vertexColors: true,
             transparent: true,
             opacity: 0.8,
@@ -344,7 +484,6 @@
         const particleMesh = new THREE.Points(particlesGeometry, particlesMaterial);
         scene.add(particleMesh);
 
-        // تعامل با موس
         let mouseX = 0;
         let mouseY = 0;
         let targetX = 0;
@@ -368,7 +507,7 @@
 
             targetX = mouseX * 0.0015;
             targetY = mouseY * 0.0015;
-
+            
             camera.position.x += (targetX - camera.position.x) * 0.05;
             camera.position.y += (-targetY - camera.position.y) * 0.05;
             camera.lookAt(scene.position);

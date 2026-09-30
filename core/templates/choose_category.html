@@ -18,17 +18,101 @@
         .bg-image-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background-position: center; background-size: cover; }
         .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 15, 17, 0.75); }
 
+        /* --- هدر کاملاً شفاف --- */
         header {
-            position: fixed; top: 0; left: 0; width: 100%; padding: 15px 40px;
-            display: flex; justify-content: flex-start; align-items: center;
-            background: rgba(15, 15, 17, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255,255,255,0.05); box-sizing: border-box; z-index: 1000;
+            position: fixed; top: 0; left: 0; width: 100%; padding: 20px 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: transparent;
+            border-bottom: none;
+            box-sizing: border-box; z-index: 2000;
         }
-        .nav-links { display: flex; gap: 25px; align-items: center; }
-        .nav-links a { color: #ccc; text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.3s; }
-        .nav-links a:hover { color: #fff; }
-        .nav-links a.signup-btn { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; padding: 6px 16px; border-radius: 20px; font-weight: 600; transition: all 0.2s; }
-        .nav-links a.signup-btn:hover { background: #8b5cf6; color: white; }
+
+        /* --- منوی کپسولی دسکتاپ --- */
+        .desktop-nav {
+            display: flex; gap: 8px; align-items: center;
+        }
+        
+        .tab-btn {
+            position: relative; display: flex; align-items: center; gap: 8px;
+            background: rgba(30, 30, 34, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            color: #a1a1aa; font-family: monospace; text-transform: uppercase;
+            font-size: 13px; font-weight: 500; padding: 10px 16px; border-radius: 25px;
+            cursor: pointer; overflow: hidden; text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+        
+        .tab-icon {
+            flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+            transition: transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+
+        .tab-text {
+            white-space: nowrap; transition: all 0.3s cubic-bezier(0.86, 0, 0.07, 1);
+            max-width: 0; opacity: 0; filter: blur(4px); overflow: hidden;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .tab-btn:hover { color: #fff; background: rgba(40, 40, 45, 0.8); }
+            .tab-btn.active { color: #8b5cf6; padding-left: 20px; padding-right: 20px; border-color: rgba(139, 92, 246, 0.3); }
+            .tab-btn.active .tab-icon { transform: scale(1.1); }
+            .tab-btn.active .tab-text { max-width: 100px; opacity: 1; filter: blur(0px); margin-left: 4px; }
+        }
+
+        .desktop-nav a.action-btn { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; border-color: transparent; }
+        .desktop-nav a.action-btn:hover { background: #8b5cf6; color: white; box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); }
+        .desktop-nav a.logout-btn { background: rgba(255, 59, 29, 0.15); color: #ff3b1d; border-color: transparent; }
+        .desktop-nav a.logout-btn:hover { background: #ff3b1d; color: white; box-shadow: 0 0 15px rgba(255, 59, 29, 0.4); }
+
+        /* --- دکمه منوی همبرگری موبایل --- */
+        .mobile-menu-btn {
+            display: none; background: rgba(30, 30, 34, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 50%; width: 44px; height: 44px;
+            align-items: center; justify-content: center; color: white; cursor: pointer; z-index: 2100;
+        }
+
+        /* --- منوی تمام‌صفحه شیشه‌ای (Overlay) --- */
+        .mobile-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: rgba(10, 10, 12, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 1500; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.4s ease, visibility 0.4s;
+        }
+        .mobile-overlay.open { opacity: 1; visibility: visible; pointer-events: auto; }
+
+        .mobile-nav-list { display: flex; flex-direction: column; gap: 30px; align-items: center; width: 100%; }
+        
+        .mobile-nav-link {
+            font-size: 32px; font-weight: 700; color: #888; text-decoration: none; text-transform: uppercase;
+            letter-spacing: 2px; transition: color 0.3s, transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform: translateY(20px); opacity: 0; display: flex; align-items: center; gap: 15px;
+        }
+        .mobile-overlay.open .mobile-nav-link { transform: translateY(0); opacity: 1; }
+        .mobile-overlay.open .mobile-nav-link:nth-child(1) { transition-delay: 0.1s; }
+        .mobile-overlay.open .mobile-nav-link:nth-child(2) { transition-delay: 0.15s; }
+        .mobile-overlay.open .mobile-nav-link:nth-child(3) { transition-delay: 0.2s; }
+
+        .mobile-nav-link:hover, .mobile-nav-link:active { color: #fff; transform: scale(1.05); }
+        .mobile-nav-link.active-link { color: #8b5cf6; }
+        
+        .mobile-action { margin-top: 20px; font-size: 24px; padding: 15px 40px; border-radius: 30px; border: 2px solid #8b5cf6; color: #8b5cf6; }
+        .mobile-logout { margin-top: 20px; font-size: 24px; color: #ff3b1d; border: 2px solid rgba(255, 59, 29, 0.3); padding: 15px 40px; border-radius: 30px; }
+
+        @media (max-width: 809px) {
+            header { padding: 20px; }
+            .desktop-nav { display: none; }
+            .mobile-menu-btn { display: flex; }
+            
+            .index-container { flex-direction: column; gap: 27px; }
+            .image-column { width: 120px; }
+            .floating-image-box { border-radius: 24px; }
+            .list-column { padding-top: 0; width: 100%; }
+            .cat-btn { width: 100%; padding-top: 5px; padding-bottom: 5px; }
+            .cat-title { font-size: 26px; white-space: normal; }
+            .desktop-desc-box { display: none; }
+            .mobile-desc { display: block; max-width: 520px; overflow: hidden; font-size: 15px; font-weight: 500; line-height: 1.45em; color: #888; max-height: 0; opacity: 0; transition: max-height 0.4s ease, opacity 0.4s ease; margin-top: 5px; }
+            .cat-btn.active .mobile-desc { max-height: 100px; opacity: 1; }
+        }
 
         .main-content { margin-top: 120px; padding: 40px 20px; display: flex; justify-content: center; width: 100%; box-sizing: border-box; }
         .index-container { display: flex; width: 100%; max-width: 931px; gap: 48px; align-items: stretch; flex-direction: row; }
@@ -54,18 +138,6 @@
         .desktop-desc.active { opacity: 1; transform: translateY(0); }
 
         .mobile-desc { display: none; }
-
-        @media (max-width: 809px) {
-            .index-container { flex-direction: column; gap: 27px; }
-            .image-column { width: 120px; }
-            .floating-image-box { border-radius: 24px; }
-            .list-column { padding-top: 0; width: 100%; }
-            .cat-btn { width: 100%; padding-top: 5px; padding-bottom: 5px; }
-            .cat-title { font-size: 26px; white-space: normal; }
-            .desktop-desc-box { display: none; }
-            .mobile-desc { display: block; max-width: 520px; overflow: hidden; font-size: 15px; font-weight: 500; line-height: 1.45em; color: #888; max-height: 0; opacity: 0; transition: max-height 0.4s ease, opacity 0.4s ease; margin-top: 5px; }
-            .cat-btn.active .mobile-desc { max-height: 100px; opacity: 1; }
-        }
     </style>
 </head>
 <body>
@@ -74,25 +146,69 @@
         <div class="bg-overlay"></div>
     </div>
 
+    <!-- هدر کاملاً شفاف با منوی کپسولی دسکتاپ (بدون دکمه Read) -->
     <header>
-        <div class="nav-links">
-            <a href="{% url 'landing' %}">Home</a>
-            <a href="{% url 'write_post' %}">Write</a>
+        <div class="desktop-nav" id="navTabs">
+            <a href="{% url 'landing' %}" class="tab-btn" data-id="home">
+                <div class="tab-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                </div>
+                <div class="tab-text">Home</div>
+            </a>
+            
+            <a href="{% url 'write_post' %}" class="tab-btn" data-id="write">
+                <div class="tab-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                </div>
+                <div class="tab-text">Write</div>
+            </a>
 
             {% if user.is_authenticated %}
-                <a href="{% url 'logout' %}" class="signup-btn" style="background: rgba(255, 59, 29, 0.15); color: #ff3b1d;">Logout</a>
+                <a href="{% url 'logout' %}" class="tab-btn logout-btn" data-id="logout">
+                    <div class="tab-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    </div>
+                    <div class="tab-text">Logout</div>
+                </a>
             {% else %}
-                <a href="{% url 'login' %}">Log In</a>
-                <a href="{% url 'signup' %}" class="signup-btn">Sign Up</a>
+                <a href="{% url 'login' %}" class="tab-btn" data-id="login">
+                    <div class="tab-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                    </div>
+                    <div class="tab-text">Log In</div>
+                </a>
+                <a href="{% url 'signup' %}" class="tab-btn action-btn" data-id="signup">
+                    <div class="tab-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+                    </div>
+                    <div class="tab-text">Sign Up</div>
+                </a>
             {% endif %}
         </div>
-    </header>
+
+        <div class="mobile-menu-btn" id="mobileMenuBtn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
         </div>
     </header>
+
+    <!-- لایه تمام‌صفحه موبایل (بدون گزینه Read) -->
+    <div class="mobile-overlay" id="mobileOverlay">
+        <div class="mobile-nav-list">
+            <a href="{% url 'landing' %}" class="mobile-nav-link">Home</a>
+            <a href="{% url 'write_post' %}" class="mobile-nav-link">Write</a>
+            
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="mobile-nav-link mobile-logout">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="mobile-nav-link">Log In</a>
+                <a href="{% url 'signup' %}" class="mobile-nav-link mobile-action">Sign Up</a>
+            {% endif %}
+        </div>
+    </div>
 
     <div class="main-content">
         <div class="index-container">
-
+            
             <div class="image-column" id="imageColumn">
                 <div class="floating-image-box" id="floatBox">
                     <img id="img-0" src="{% static '….jpg' %}">
@@ -123,6 +239,37 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // منوی کپسولی دسکتاپ
+            if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+                const tabs = document.querySelectorAll('.tab-btn[data-id]');
+                tabs.forEach(tab => {
+                    tab.addEventListener('mouseenter', function() {
+                        tabs.forEach(t => t.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                });
+                const navTabs = document.getElementById('navTabs');
+                navTabs.addEventListener('mouseleave', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                });
+            }
+
+            // منوی موبایل
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileOverlay = document.getElementById('mobileOverlay');
+            let isMenuOpen = false;
+            mobileMenuBtn.addEventListener('click', () => {
+                isMenuOpen = !isMenuOpen;
+                if(isMenuOpen) {
+                    mobileOverlay.classList.add('open');
+                    mobileMenuBtn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+                } else {
+                    mobileOverlay.classList.remove('open');
+                    mobileMenuBtn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
+                }
+            });
+
+            // افکت انتخاب دسته‌بندی
             const catBtns = document.querySelectorAll('.cat-btn');
             const floatBox = document.getElementById('floatBox');
             const listColumn = document.getElementById('listColumn');
@@ -139,17 +286,17 @@
             catBtns.forEach((btn) => {
                 btn.addEventListener('mouseenter', function() {
                     const idx = this.getAttribute('data-index') % 5;
-
+                    
                     catBtns.forEach(b => b.classList.remove('active'));
                     document.querySelectorAll('.floating-image-box img').forEach(img => img.classList.remove('active'));
                     document.querySelectorAll('.desktop-desc').forEach(desc => desc.classList.remove('active'));
-
+                    
                     this.classList.add('active');
                     floatBox.style.opacity = '1';
-
+                    
                     const targetImg = document.getElementById(`img-${idx}`);
                     if(targetImg) targetImg.classList.add('active');
-
+                    
                     const targetDesc = document.getElementById(`desc-${idx}`);
                     if(targetDesc) targetDesc.classList.add('active');
 
@@ -158,7 +305,7 @@
                         const offsetY = this.offsetTop - firstBtn.offsetTop;
                         floatBox.style.transform = `translateY(${offsetY}px)`;
                     }
-
+                    
                     activeIndex = idx;
                 });
             });
