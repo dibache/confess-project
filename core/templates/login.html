@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In - CONFESS</title>
+    
+    <style>
+        body { 
+            background-color: #050505; color: #ededed; font-family: system-ui, sans-serif; 
+            margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; overflow: hidden; 
+        }
+
+        .bg-image-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
+            background-image: url('{% static "download.jpg" %}'); 
+            background-position: center; background-size: cover;
+        }
+
+        .bg-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(5,5,5,0.4) 0%, rgba(5,5,5,0.8) 100%); z-index: -1;
+        }
+
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; padding: 20px 40px;
+            display: flex; justify-content: flex-start; align-items: center; z-index: 1000;
+        }
+        
+        .back-btn {
+            color: #ccc; text-decoration: none; font-size: 14px; font-weight: 500; 
+            text-transform: uppercase; letter-spacing: 2px; transition: color 0.3s;
+        }
+        .back-btn:hover { color: #fff; }
+
+        /* --- فرم کاملاً شیشه‌ای (مشابه صفحه Write) --- */
+        .form-container {
+            width: 90%; max-width: 450px; 
+            background-color: transparent; /* پس‌زمینه شفاف */
+            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+            padding: 50px 40px; border-radius: 24px; 
+            border: 1px solid rgba(255,255,255,0.03); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); box-sizing: border-box;
+            animation: fadeIn 0.6s ease forwards;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .form-title { font-size: 32px; font-weight: 600; margin-bottom: 10px; color: #fff; text-align: center; }
+        .form-subtitle { font-size: 14px; color: #888; text-align: center; margin-bottom: 35px; }
+
+        .input-group { margin-bottom: 25px; }
+        .input-group label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: #a3a1ad; margin-bottom: 10px; font-weight: 500; }
+        
+        /* --- اینپوت‌های نیمه‌شفاف --- */
+        input[type="text"], input[type="password"] {
+            width: 100%; 
+            background: rgba(15, 15, 18, 0.7); /* پس‌زمینه نیمه‌شفاف برای کادر */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff; padding: 15px; border-radius: 12px; font-size: 16px; 
+            box-sizing: border-box; transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input[type="text"]:focus, input[type="password"]:focus { 
+            outline: none; border-color: #8b5cf6; box-shadow: 0 0 15px rgba(139, 92, 246, 0.2); 
+        }
+
+        .submit-btn {
+            width: 100%; background: #fff; color: #000; border: none; padding: 16px; border-radius: 12px;
+            font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-top: 10px;
+        }
+        .submit-btn:hover { background: #8b5cf6; color: #fff; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3); }
+
+        .error-message { color: #ff3b1d; font-size: 13px; text-align: center; margin-bottom: 15px; }
+        
+        /* --- استایل لینک ثبت‌نام --- */
+        .signup-link-container {
+            text-align: center; margin-top: 25px; font-size: 13px;
+        }
+        .signup-link-container span { color: #888; }
+        .signup-link-container a { 
+            color: #8b5cf6; text-decoration: none; font-weight: 600; transition: color 0.3s; 
+        }
+        .signup-link-container a:hover { color: #a78bfa; text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-image-container"></div>
+    <div class="bg-overlay"></div>
+
+    <header>
+        <a href="{% url 'landing' %}" class="back-btn">← Home</a>
+    </header>
+
+    <div class="form-container">
+        <div class="form-title">Welcome Back</div>
+        <div class="form-subtitle">Log in to your identity.</div>
+
+        <form method="POST" action="">
+            {% csrf_token %}
+            
+            {% if error %}
+                <p class="error-message">{{ error }}</p>
+            {% endif %}
+
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" required autocomplete="off">
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" required>
+            </div>
+
+            <button type="submit" class="submit-btn">Log In</button>
+
+            <!-- لینک هدایت به صفحه ثبت‌نام برای کاربران مهمان -->
+            <div class="signup-link-container">
+                <span>Don't have an identity yet? </span>
+                <a href="{% url 'signup' %}">Create one here</a>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>
