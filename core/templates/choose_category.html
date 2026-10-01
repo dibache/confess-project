@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Read - CONFESS</title>
     <style>
+        /* ==========================================
+           [SECTION 1: GENERAL STYLES & BODY]
+           ================================---------- */
         body {
             background: #0f0f11;
             color: white;
@@ -15,10 +18,15 @@
             min-height: 100vh;
         }
 
+        /* ==========================================
+           [SECTION 2: BACKGROUND & OVERLAY]
+           ================================---------- */
         .bg-image-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background-position: center; background-size: cover; }
         .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 15, 17, 0.75); }
 
-        /* --- هدر کاملاً شفاف --- */
+        /* ==========================================
+           [SECTION 3: HEADER & NAVIGATION]
+           ================================---------- */
         header {
             position: fixed; top: 0; left: 0; width: 100%; padding: 20px 40px;
             display: flex; justify-content: space-between; align-items: center;
@@ -27,11 +35,10 @@
             box-sizing: border-box; z-index: 2000;
         }
 
-        /* --- منوی کپسولی دسکتاپ --- */
         .desktop-nav {
             display: flex; gap: 8px; align-items: center;
         }
-        
+
         .tab-btn {
             position: relative; display: flex; align-items: center; gap: 8px;
             background: rgba(30, 30, 34, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -41,7 +48,7 @@
             cursor: pointer; overflow: hidden; text-decoration: none;
             transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
         }
-        
+
         .tab-icon {
             flex-shrink: 0; display: flex; align-items: center; justify-content: center;
             transition: transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
@@ -64,14 +71,15 @@
         .desktop-nav a.logout-btn { background: rgba(255, 59, 29, 0.15); color: #ff3b1d; border-color: transparent; }
         .desktop-nav a.logout-btn:hover { background: #ff3b1d; color: white; box-shadow: 0 0 15px rgba(255, 59, 29, 0.4); }
 
-        /* --- دکمه منوی همبرگری موبایل --- */
+        /* ==========================================
+           [SECTION 4: MOBILE MENU]
+           ================================---------- */
         .mobile-menu-btn {
             display: none; background: rgba(30, 30, 34, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255,255,255,0.08); border-radius: 50%; width: 44px; height: 44px;
             align-items: center; justify-content: center; color: white; cursor: pointer; z-index: 2100;
         }
 
-        /* --- منوی تمام‌صفحه شیشه‌ای (Overlay) --- */
         .mobile-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background: rgba(10, 10, 12, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -81,7 +89,7 @@
         .mobile-overlay.open { opacity: 1; visibility: visible; pointer-events: auto; }
 
         .mobile-nav-list { display: flex; flex-direction: column; gap: 30px; align-items: center; width: 100%; }
-        
+
         .mobile-nav-link {
             font-size: 32px; font-weight: 700; color: #888; text-decoration: none; text-transform: uppercase;
             letter-spacing: 2px; transition: color 0.3s, transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -94,7 +102,7 @@
 
         .mobile-nav-link:hover, .mobile-nav-link:active { color: #fff; transform: scale(1.05); }
         .mobile-nav-link.active-link { color: #8b5cf6; }
-        
+
         .mobile-action { margin-top: 20px; font-size: 24px; padding: 15px 40px; border-radius: 30px; border: 2px solid #8b5cf6; color: #8b5cf6; }
         .mobile-logout { margin-top: 20px; font-size: 24px; color: #ff3b1d; border: 2px solid rgba(255, 59, 29, 0.3); padding: 15px 40px; border-radius: 30px; }
 
@@ -102,7 +110,7 @@
             header { padding: 20px; }
             .desktop-nav { display: none; }
             .mobile-menu-btn { display: flex; }
-            
+
             .index-container { flex-direction: column; gap: 27px; }
             .image-column { width: 120px; }
             .floating-image-box { border-radius: 24px; }
@@ -114,6 +122,9 @@
             .cat-btn.active .mobile-desc { max-height: 100px; opacity: 1; }
         }
 
+        /* ==========================================
+           [SECTION 5: MAIN CATEGORIES CONTAINER & HOVER IMAGES]
+           ================================---------- */
         .main-content { margin-top: 120px; padding: 40px 20px; display: flex; justify-content: center; width: 100%; box-sizing: border-box; }
         .index-container { display: flex; width: 100%; max-width: 931px; gap: 48px; align-items: stretch; flex-direction: row; }
 
@@ -146,7 +157,7 @@
         <div class="bg-overlay"></div>
     </div>
 
-    <!-- هدر کاملاً شفاف با منوی کپسولی دسکتاپ (بدون دکمه Read) -->
+    <!-- هدر سایت -->
     <header>
         <div class="desktop-nav" id="navTabs">
             <a href="{% url 'landing' %}" class="tab-btn" data-id="home">
@@ -155,7 +166,7 @@
                 </div>
                 <div class="tab-text">Home</div>
             </a>
-            
+
             <a href="{% url 'write_post' %}" class="tab-btn" data-id="write">
                 <div class="tab-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
@@ -191,12 +202,12 @@
         </div>
     </header>
 
-    <!-- لایه تمام‌صفحه موبایل (بدون گزینه Read) -->
+    <!-- منوی موبایل -->
     <div class="mobile-overlay" id="mobileOverlay">
         <div class="mobile-nav-list">
             <a href="{% url 'landing' %}" class="mobile-nav-link">Home</a>
             <a href="{% url 'write_post' %}" class="mobile-nav-link">Write</a>
-            
+
             {% if user.is_authenticated %}
                 <a href="{% url 'logout' %}" class="mobile-nav-link mobile-logout">Logout</a>
             {% else %}
@@ -208,21 +219,30 @@
 
     <div class="main-content">
         <div class="index-container">
-            
+
+            <!-- ستون عکس‌های شناور با تطبیق هوشمند نام دسته‌ها -->
             <div class="image-column" id="imageColumn">
                 <div class="floating-image-box" id="floatBox">
-                    <img id="img-0" src="{% static '….jpg' %}">
-                    <img id="img-1" src="{% static 'Bad day.jpg' %}">
-                    <img id="img-2" src="{% static 'racism.jpg' %}"> <!-- عکس اضافه شده برای racism -->
-                    <img id="img-3" src="{% static '….jpg' %}">
-                    <img id="img-4" src="{% static 'Bad day.jpg' %}">
-                    <img id="img-5" src="{% static '….jpg' %}">
+                    {% for cat in categories %}
+                        {% if cat.name|lower == 'love' %}
+                            <img id="img-{{ forloop.counter0 }}" src="{% static 'love.jpg' %}">
+                        {% elif cat.name|lower == 'fun' %}
+                            <img id="img-{{ forloop.counter0 }}" src="{% static 'fun.jpg' %}">
+                        {% elif cat.name|lower == 'bad day' %}
+                            <img id="img-{{ forloop.counter0 }}" src="{% static 'Bad day.jpg' %}">
+                        {% elif cat.name|lower == 'racism' %}
+                            <img id="img-{{ forloop.counter0 }}" src="{% static 'racism.jpg' %}">
+                        {% else %}
+                            <img id="img-{{ forloop.counter0 }}" src="{% static 'download (1).jpg' %}">
+                        {% endif %}
+                    {% endfor %}
                 </div>
             </div>
 
+            <!-- ستون لیست دسته‌بندی‌ها -->
             <div class="list-column" id="listColumn">
                 {% for cat in categories %}
-                <button class="cat-btn" data-index="{{ forloop.counter0|default:0 }}" onclick="window.location.href='{% url 'read_category' cat.id %}'">
+                <button class="cat-btn" data-index="{{ forloop.counter0 }}" onclick="window.location.href='{% url 'read_category' cat.id %}'">
                     <span class="cat-title">{{ cat.name }}</span>
                     <p class="mobile-desc">Read the latest stories and confessions about {{ cat.name }}. Discover what others are going through.</p>
                 </button>
@@ -230,7 +250,7 @@
 
                 <div class="desktop-desc-box" id="desktopDescBox">
                     {% for cat in categories %}
-                    <p class="desktop-desc" id="desc-{{ forloop.counter0|default:0 }}">Read the latest stories and confessions about {{ cat.name }}. Discover what others are going through.</p>
+                    <p class="desktop-desc" id="desc-{{ forloop.counter0 }}">Read the latest stories and confessions about {{ cat.name }}. Discover what others are going through.</p>
                     {% endfor %}
                 </div>
             </div>
@@ -238,6 +258,9 @@
         </div>
     </div>
 
+    <!-- ==========================================
+       [SECTION 6: JAVASCRIPT LOGIC]
+       ================================---------- -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // منوی کپسولی دسکتاپ
@@ -270,7 +293,7 @@
                 }
             });
 
-            // افکت انتخاب دسته‌بندی
+            // افکت تعاملی انتخاب دسته‌بندی و تغییر عکس‌ها
             const catBtns = document.querySelectorAll('.cat-btn');
             const floatBox = document.getElementById('floatBox');
             const listColumn = document.getElementById('listColumn');
@@ -286,18 +309,18 @@
 
             catBtns.forEach((btn) => {
                 btn.addEventListener('mouseenter', function() {
-                    const idx = this.getAttribute('data-index') % 6; // اصلاح به 6 برای تطابق با تعداد عکس‌ها
-                    
+                    const idx = this.getAttribute('data-index');
+
                     catBtns.forEach(b => b.classList.remove('active'));
                     document.querySelectorAll('.floating-image-box img').forEach(img => img.classList.remove('active'));
                     document.querySelectorAll('.desktop-desc').forEach(desc => desc.classList.remove('active'));
-                    
+
                     this.classList.add('active');
                     floatBox.style.opacity = '1';
-                    
+
                     const targetImg = document.getElementById(`img-${idx}`);
                     if(targetImg) targetImg.classList.add('active');
-                    
+
                     const targetDesc = document.getElementById(`desc-${idx}`);
                     if(targetDesc) targetDesc.classList.add('active');
 
@@ -306,7 +329,7 @@
                         const offsetY = this.offsetTop - firstBtn.offsetTop;
                         floatBox.style.transform = `translateY(${offsetY}px)`;
                     }
-                    
+
                     activeIndex = idx;
                 });
             });
@@ -321,6 +344,5 @@
             });
         });
     </script>
-
 </body>
 </html>
